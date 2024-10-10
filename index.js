@@ -1,7 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
+morgan.token('body', function (req, res) { return JSON.stringify(req.body)})
+app.use(morgan(':method :url :status :body'))
+
+
 
 let persons = [
     {   id:1, 
@@ -22,6 +28,8 @@ let persons = [
         number: "39-23-6423122" 
     }
   ]
+
+
   
 app.get('/api/persons',(request, response) => {
     response.json(persons)
@@ -54,8 +62,35 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
   })
 
+  app.post('/api/persons', (request, response) => { 
+    const body = request.body 
+ 
+    if(!body.name||!body.number){
+      return response.status(400).json({
+          error:'Name or number is missing'
+      })
+
+  }
+  if(persons.find(person=>person.name===body.name)){
+      return response.status(400).json({
+          error:'Name must be unique'
+      })
+  }
+ 
+    const person = { 
+        id: Math.floor(Math.random()*100000000), 
+        name: body.name, 
+        number: body.number
+    } 
+     
+    persons = persons.concat(person) 
+ 
+    response.json(person) 
+})
 
 
 
-const PORT=3001
-app.listen(PORT)
+const PORT= process.env.PORT||3001
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })

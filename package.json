@@ -12,7 +12,8 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.0",
-    "fullstack_osa3_2.0": "file:"
+    "fullstack_osa3_2.0": "file:",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
