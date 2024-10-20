@@ -18,8 +18,25 @@ mongoose.connect(url)
 
 const personsSchema = new mongoose.Schema({
     id: String,
-    name: String,
-    number: String,
+    name: {
+        type: String,
+        minlength: 3,
+        required: true,
+    },
+    number: {
+        type: String,
+        minlength: 8,
+        validate: {
+            validator: function (v) {
+                return /^\d{2,3}-\d{5,}$/.test(v)
+            },
+            message: props => `${props.value} not a valid phone number`
+
+        },
+        required: true,
+
+
+    }
 })
 
 personsSchema.set('toJSON', {
